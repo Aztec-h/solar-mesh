@@ -31,6 +31,8 @@
 
 ## 📂 System Architecture
 
+![LeyLine Architecture](assets/arch.png)
+
 LeyLine utilizes a modern event-driven microservices architecture:
 
 1. **Sensors** push data to the **Core API** (or to local **Edge Nodes** if offline).
