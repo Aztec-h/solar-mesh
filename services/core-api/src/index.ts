@@ -4,6 +4,7 @@ import { Kafka } from 'kafkajs';
 import { createClient } from 'redis';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
+import promClient from 'prom-client';
 
 const app = express();
 const httpServer = createServer(app);
@@ -27,6 +28,22 @@ const producer = kafka.producer();
 
 const redisClient = createClient({ url: process.env.REDIS_URL || 'redis://localhost:6379' });
 const redisSubscriber = redisClient.duplicate();
+
+// ---------------------------------------------------------
+// MILESTONE 4: OBSERVABILITY (Prometheus Metrics)
+// ---------------------------------------------------------
+const collectDefaultMetrics = promClient.collectDefaultMetrics;
+collectDefaultMetrics({ register: promClient.register });
+
+const energyEventsCounter = new promClient.Counter({
+  name: 'solarmesh_energy_events_total',
+  help: 'Total number of energy events ingested'
+});
+
+app.get('/metrics', async (req, res) => {
+    res.set('Content-Type', promClient.register.contentType);
+    res.send(await promClient.register.metrics());
+});
 
 // ---------------------------------------------------------
 // MILESTONE 3: CQRS PROJECTION FUNCTION
@@ -97,6 +114,9 @@ app.post('/energy', async (req, res) => {
 
         // Fire projection update
         updateCQRSReadModel(home_id);
+
+        // MILESTONE 4: Increment Prometheus Counter
+        energyEventsCounter.inc();
 
         await producer.send({
             topic: 'energy-events',

@@ -1,0 +1,13 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: 'solarmesh-core-api'
+    static_configs:
+      - targets: ['core-api:3000']
+  - job_name: 'redpanda'
+    static_configs:
+      - targets: ['redpanda:9644']
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-exporter:9121']
