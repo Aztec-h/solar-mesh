@@ -27,3 +27,13 @@ CREATE TABLE energy_readings (
 );
 
 SELECT create_hypertable('energy_readings', 'time');
+
+-- MILESTONE 3: CQRS READ MODEL
+-- Separating the "Write" (events) from the "Read" (this table).
+CREATE TABLE house_read_models (
+    home_id INT PRIMARY KEY REFERENCES homes(id),
+    total_generated_kwh DECIMAL NOT NULL DEFAULT 0,
+    total_consumed_kwh DECIMAL NOT NULL DEFAULT 0,
+    net_surplus_kwh DECIMAL NOT NULL DEFAULT 0,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
