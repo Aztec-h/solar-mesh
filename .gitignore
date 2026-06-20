@@ -15,6 +15,15 @@ obj/
 *.prof
 vendor/
 
+# Python (Forecast Service)
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.venv/
+.pytest_cache/
+
 # Docker
 .docker/
 
